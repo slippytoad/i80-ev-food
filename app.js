@@ -1,137 +1,3 @@
-// Application data
-const stationData = {
-  "vallejo": {
-    "tesla_supercharger": {
-      "address": "904 Admiral Callaghan Lane, Vallejo, CA 94591",
-      "stalls": 18,
-      "max_power": "150kW",
-      "network": "Tesla",
-      "lat": 38.1040,
-      "lng": -122.2561,
-      "nearby_restaurants": [
-        {"name": "In-N-Out Burger", "address": "720 Admiral Callaghan Ln, Vallejo, CA 94591", "distance": "0.1 miles", "cuisine": "Fast Food Burgers", "rating": 3.7},
-        {"name": "Bud's Burgers", "address": "3849 Sonoma Blvd, Vallejo, CA 94589", "distance": "0.5 miles", "cuisine": "Fast Casual Burgers", "rating": 4.1},
-        {"name": "Q's Halal Mediterranean Comfort", "address": "48 Springstown Ctr, Vallejo, CA 94591", "distance": "0.4 miles", "cuisine": "Mediterranean", "rating": 4.6},
-        {"name": "Gracie's", "address": "1801 Sonoma Blvd, Vallejo, CA 94590", "distance": "0.6 miles", "cuisine": "BBQ/Sandwiches", "rating": 3.7}
-      ]
-    }
-  },
-  "fairfield": {
-    "tesla_supercharger_travis": {
-      "address": "1350 Travis Blvd, Fairfield, CA 94533",
-      "stalls": 12,
-      "max_power": "150kW",
-      "network": "Tesla",
-      "lat": 38.2494,
-      "lng": -122.0531,
-      "nearby_restaurants": [
-        {"name": "Chick-fil-A", "address": "1750 Travis Blvd, Fairfield, CA 94533", "distance": "0.2 miles", "cuisine": "Fast Casual Chicken", "rating": 3.7},
-        {"name": "In-N-Out Burger", "address": "1364 Holiday Ln, Fairfield, CA 94534", "distance": "0.1 miles", "cuisine": "Fast Food Burgers", "rating": 3.9},
-        {"name": "Monsoon Burgers", "address": "321 Texas St, Ste 101, Fairfield, CA 94533", "distance": "0.8 miles", "cuisine": "Fast Casual Burgers", "rating": 3.9},
-        {"name": "Big H Deli", "address": "4437 Central Pl, Fairfield, CA 94534", "distance": "1.2 miles", "cuisine": "Mediterranean/Sandwiches", "rating": 4.8}
-      ]
-    }
-  },
-  "davis": {
-    "electrify_america": {
-      "address": "Davis, CA (Downtown area)",
-      "stalls": "6-8",
-      "max_power": "350kW",
-      "network": "Electrify America",
-      "lat": 38.5449,
-      "lng": -121.7405,
-      "nearby_restaurants": [
-        {"name": "Burgers and Brew", "address": "403 3rd St, Davis, CA 95616", "distance": "walkable", "cuisine": "Fast Casual Burgers", "rating": 3.8},
-        {"name": "Crepeville", "address": "330 3rd St, Davis, CA 95616", "distance": "walkable", "cuisine": "Breakfast/Crepes", "rating": 3.8},
-        {"name": "Taqueria Davis", "address": "505 1/2 L St, Davis, CA 95616", "distance": "walkable", "cuisine": "Mexican", "rating": 4.4},
-        {"name": "Sam's Cuisine", "address": "301 B St, Davis, CA 95616", "distance": "walkable", "cuisine": "Mediterranean", "rating": 4.4},
-        {"name": "Raising Cane's", "address": "207 E St, Davis, CA 95616", "distance": "walkable", "cuisine": "Fast Casual Chicken", "rating": 3.3},
-        {"name": "My Burma", "address": "500 1st St, Ste 11, Davis, CA 95616", "distance": "walkable", "cuisine": "Burmese/Asian Fusion", "rating": 4.5}
-      ]
-    }
-  },
-  "sacramento": {
-    "tesla_supercharger": {
-      "address": "3668 N. Freeway Blvd, Sacramento, CA 95834",
-      "stalls": "12-16",
-      "max_power": "250kW",
-      "network": "Tesla",
-      "lat": 38.6382,
-      "lng": -121.5263,
-      "nearby_restaurants": [
-        {"name": "Urban Plates", "address": "2080 Fair Oaks Blvd, Sacramento, CA 95825", "distance": "walkable", "cuisine": "Healthy Fast Casual", "rating": 4.5},
-        {"name": "Jayna Gyro", "address": "3101 Folsom Blvd, Sacramento, CA 95816", "distance": "walkable", "cuisine": "Mediterranean/Greek", "rating": 4.3},
-        {"name": "Sauced BBQ & Spirits", "address": "1028 7th St, Sacramento, CA 95814", "distance": "walkable", "cuisine": "BBQ/Southern", "rating": 3.7},
-        {"name": "La Cosecha", "address": "917 9th St, Sacramento, CA 95814", "distance": "walkable", "cuisine": "Mexican", "rating": 3.8}
-      ]
-    },
-    "rivian_adventure_network": {
-      "address": "1790 Expo Pkwy, Sacramento, CA 95815 (REI)",
-      "stalls": 6,
-      "max_power": "300kW",
-      "network": "Rivian",
-      "lat": 38.6171,
-      "lng": -121.4944,
-      "nearby_restaurants": [
-        {"name": "Urban Plates", "address": "2080 Fair Oaks Blvd, Sacramento, CA 95825", "distance": "1.5 miles", "cuisine": "Healthy Fast Casual", "rating": 4.5},
-        {"name": "Bacon & Butter", "address": "5913 Broadway, Sacramento, CA 95820", "distance": "2.0 miles", "cuisine": "Breakfast/Brunch", "rating": 4.3},
-        {"name": "Hook & Ladder Manufacturing", "address": "1630 S St, Sacramento, CA 95811", "distance": "2.5 miles", "cuisine": "New American", "rating": 3.9}
-      ]
-    }
-  },
-  "roseville": {
-    "electrify_america": {
-      "address": "1151 Galleria Blvd, Roseville, CA 95678 (Galleria Mall)",
-      "stalls": "8-12",
-      "max_power": "350kW",
-      "network": "Electrify America",
-      "lat": 38.7521,
-      "lng": -121.2618,
-      "nearby_restaurants": [
-        {"name": "Shake Shack", "address": "1151 Galleria Blvd, Suite FC-12, Roseville, CA 95678", "distance": "0.1 miles", "cuisine": "Fast Casual Burgers", "rating": 2.9},
-        {"name": "Krush Burger", "address": "1151 Galleria Blvd, Ste 1170, Roseville, CA 95678", "distance": "0.1 miles", "cuisine": "Mini Burgers", "rating": 3.6},
-        {"name": "Q1227 Restaurant", "address": "1151 Galleria Blvd, Ste 1175, Roseville, CA 95678", "distance": "0.1 miles", "cuisine": "Modern Comfort Food", "rating": 4.2},
-        {"name": "Land Ocean Restaurant", "address": "1151 Galleria Blvd, Ste 241, Roseville, CA 95678", "distance": "0.1 miles", "cuisine": "American Steakhouse", "rating": 4.0},
-        {"name": "Mendocino Farms", "address": "1210 Roseville Pkwy, Roseville, CA 95678", "distance": "0.3 miles", "cuisine": "Sandwiches/Salads", "rating": 4.1},
-        {"name": "Eureka!", "address": "234 Gibson Dr, Ste 100, Roseville, CA 95678", "distance": "0.4 miles", "cuisine": "American", "rating": 4.0}
-      ]
-    }
-  },
-  "auburn": {
-    "electrify_america": {
-      "address": "1819 Auburn Ravine Rd, Auburn, CA 95603 (Motel 6)",
-      "stalls": 5,
-      "max_power": "350kW",
-      "network": "Electrify America",
-      "lat": 38.8973,
-      "lng": -121.0767,
-      "nearby_restaurants": [
-        {"name": "In-N-Out Burger", "address": "130 Grass Valley Hwy, Auburn, CA 95603", "distance": "0.5 miles", "cuisine": "Fast Food Burgers", "rating": 3.8},
-        {"name": "Burger & Cream", "address": "403 Grass Valley Hwy, Auburn, CA 95603", "distance": "0.6 miles", "cuisine": "Fast Casual Burgers/Ice Cream", "rating": 4.5},
-        {"name": "Local Heroes", "address": "1120 High St, Auburn, CA 95603", "distance": "0.7 miles", "cuisine": "Fast Casual Burgers", "rating": 4.2},
-        {"name": "Nancy's Cafe", "address": "356 Elm Ave, Auburn, CA 95603", "distance": "0.8 miles", "cuisine": "Breakfast/Sandwiches", "rating": 4.5},
-        {"name": "Edelweiss", "address": "627 High St, Auburn, CA 95603", "distance": "0.9 miles", "cuisine": "Breakfast/Sandwiches", "rating": 4.4}
-      ]
-    }
-  },
-  "truckee": {
-    "electrify_america": {
-      "address": "11399 Deerfield Drive, Truckee, CA 96161 (Save Mart)",
-      "stalls": 5,
-      "max_power": "350kW",
-      "network": "Electrify America",
-      "lat": 39.3280,
-      "lng": -120.1832,
-      "nearby_restaurants": [
-        {"name": "Burger Me", "address": "10418 Donner Pass Rd, Truckee, CA 96161", "distance": "0.8 miles", "cuisine": "Fast Casual Burgers", "rating": 3.8},
-        {"name": "Old Town Tap", "address": "10164 Donner Pass Rd, Ste 1, Truckee, CA 96161", "distance": "0.9 miles", "cuisine": "Pizza/New American", "rating": 4.3},
-        {"name": "Moody's Bistro Bar & Beats", "address": "10007 Bridge St, Truckee, CA 96161", "distance": "1.0 miles", "cuisine": "New American", "rating": 4.0},
-        {"name": "Alibi Ale Works", "address": "10069 Bridge St, Truckee, CA 96161", "distance": "1.0 miles", "cuisine": "Brewpub/New American", "rating": 4.2},
-        {"name": "Truckee Tavern and Grill", "address": "10118 Donner Pass Rd, Truckee, CA 96161", "distance": "0.9 miles", "cuisine": "New American/Steakhouse", "rating": 3.8}
-      ]
-    }
-  }
-};
 
 // Global variables
 let map;
@@ -474,5 +340,89 @@ function performSearch(query) {
     searchInput.style.borderColor = 'var(--color-success)';
   } else {
     searchInput.style.borderColor = 'var(--color-warning)';
+  }
+}
+
+// Add this utility function for converting meters to miles
+function metersToMiles(meters) {
+  return (meters * 0.000621371).toFixed(1) + ' miles';
+}
+
+// Modified createRestaurantMarkers to use Google Places data
+async function fetchAndCreateRestaurantMarkers(station) {
+  try {
+    const service = new google.maps.places.PlacesService(map._container);
+    
+    const request = {
+      location: new google.maps.LatLng(station.lat, station.lng),
+      radius: 800, // 800 meters (~0.5 mile walk)
+      type: ['restaurant'],
+      rankBy: google.maps.places.RankBy.PROMINENCE
+    };
+
+    const results = await new Promise((resolve, reject) => {
+      service.nearbySearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) resolve(results);
+        else reject(status);
+      });
+    });
+
+    // Process results and create markers
+    results.forEach(place => {
+      if (!place.name || !place.geometry?.location) return;
+
+      // Calculate approximate offset for marker placement
+      const offsetLat = (Math.random() - 0.5) * 0.008;
+      const offsetLng = (Math.random() - 0.5) * 0.008;
+      
+      const marker = L.circleMarker([
+        station.lat + offsetLat,
+        station.lng + offsetLng
+      ], {
+        radius: 5,
+        fillColor: '#F59E0B',
+        color: '#ffffff',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      });
+
+      const popupContent = `
+        <div style="font-family: var(--font-family-base);">
+          <h4 style="margin: 0 0 4px 0; color: #F59E0B;">${place.name}</h4>
+          <p style="margin: 0 0 2px 0; font-size: 11px;">
+            ${place.rating ? `<strong>Rating:</strong> ${place.rating}/5` : ''}
+          </p>
+          ${place.vicinity ? `<p style="margin: 0 0 2px 0; font-size: 11px;">${place.vicinity}</p>` : ''}
+        </div>
+      `;
+
+      marker.bindPopup(popupContent);
+      marker.addTo(map);
+
+      restaurantMarkers.push({
+        marker: marker,
+        restaurant: {
+          name: place.name,
+          address: place.vicinity,
+          rating: place.rating,
+          distance: metersToMiles(place.distance || 800)
+        },
+        station: station,
+        visible: true
+      });
+    });
+  } catch (error) {
+    console.error('Google Places error:', error);
+  }
+}
+
+// Modified loadChargingStations to use Google Places
+async function loadChargingStations() {
+  const stations = Object.values(stationData).flatMap(city => Object.values(city));
+  
+  for (const station of stations) {
+    createStationMarker(station);
+    await fetchAndCreateRestaurantMarkers(station);
   }
 }
