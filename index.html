@@ -86,3 +86,57 @@
       [...superchargers].reverse().forEach(sc => {
         westMarkers.push(createSuperchargerMarker(sc));
         sc.restaurants.forEach(r => westMarkers.push(createRestaurantMarker(r)));
+      });
+    }
+
+    function createSuperchargerMarker(sc) {
+      const marker = new google.maps.Marker({
+        position: sc.pos,
+        map: null,
+        icon: icons.supercharger,
+        title: sc.name
+      });
+      
+      new google.maps.InfoWindow({content: sc.name}).addListener('click', marker);
+      return marker;
+    }
+
+    function createRestaurantMarker(r) {
+      const marker = new google.maps.Marker({
+        position: r.pos,
+        map: null,
+        icon: icons[r.type],
+        title: r.name
+      });
+      return marker;
+    }
+
+    function updateMap() {
+      const direction = document.getElementById('direction').value;
+      
+      // Clear existing markers
+      eastMarkers.concat(westMarkers).forEach(m => m.setMap(null));
+      
+      // Show correct markers
+      const activeMarkers = direction === 'eastbound' ? eastMarkers : westMarkers;
+      activeMarkers.forEach(m => m.setMap(map));
+      
+      // Update route
+      const waypoints = superchargers.slice(1, -1).map(sc => ({location: sc.pos}));
+      const route = direction === 'eastbound' ? 
+        {origin: superchargers[0].pos, destination: superchargers.slice(-1)[0].pos} :
+        {origin: superchargers.slice(-1)[0].pos, destination: superchargers[0].pos};
+
+      directionsService.route({
+        origin: route.origin,
+        destination: route.destination,
+        waypoints: waypoints,
+        travelMode: google.maps.TravelMode.DRIVING
+      }, (response, status) => {
+        if (status === 'OK') directionsRenderer.setDirections(response);
+      });
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGcxvnuW6VAAtihWg93u0EN3PvZdSAJoM&callback=initMap" async defer></script>
+</body>
+</html>
