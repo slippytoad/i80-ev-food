@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tesla Superchargers I-80: Oakland to Truckee</title>
+    <title>I-80 EV Charging & Dining Guide</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,139 +11,104 @@
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
-            <div class="container">
-                <h1>Tesla Superchargers: I-80 Oakland to Truckee</h1>
-                <p class="header-subtitle">Plan your Tesla charging stops with nearby dining options</p>
-            </div>
+            <h1>I-80 EV Charging & Dining Guide</h1>
+            <p class="header-subtitle">Oakland to Truckee • Fast casual dining near EV chargers</p>
         </header>
 
         <!-- Main Content -->
-        <main class="app-main">
-            <div class="map-container">
-                <!-- Controls Panel -->
-                <div class="controls-panel card">
-                    <div class="controls-header">
-                        <h3>Filters & Legend</h3>
-                        <button class="btn btn--sm toggle-panel" id="toggleControls">Hide</button>
-                    </div>
-                    
-                    <div class="controls-content" id="controlsContent">
-                        <!-- Filters -->
-                        <div class="filter-section">
-                            <h4>Show Locations</h4>
-                            <div class="filter-group">
-                                <label class="filter-item">
-                                    <input type="checkbox" id="showTesla" checked>
-                                    <span class="filter-label">
-                                        <span class="legend-marker tesla-marker"></span>
-                                        Tesla Superchargers
-                                    </span>
-                                </label>
-                                <label class="filter-item">
-                                    <input type="checkbox" id="showOnlyWithRestaurants">
-                                    <span class="filter-label">Only locations with restaurants</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Restaurant Filters -->
-                        <div class="filter-section">
-                            <h4>Restaurant Types</h4>
-                            <div class="filter-group">
-                                <label class="filter-item">
-                                    <input type="checkbox" id="showPandaExpress" checked>
-                                    <span class="filter-label">
-                                        <span class="legend-marker panda-marker"></span>
-                                        Panda Express
-                                    </span>
-                                </label>
-                                <label class="filter-item">
-                                    <input type="checkbox" id="showChickFilA" checked>
-                                    <span class="filter-label">
-                                        <span class="legend-marker chickfila-marker"></span>
-                                        Chick-fil-A
-                                    </span>
-                                </label>
-                                <label class="filter-item">
-                                    <input type="checkbox" id="showPanera" checked>
-                                    <span class="filter-label">
-                                        <span class="legend-marker panera-marker"></span>
-                                        Panera
-                                    </span>
-                                </label>
-                                <label class="filter-item">
-                                    <input type="checkbox" id="showChipotle" checked>
-                                    <span class="filter-label">
-                                        <span class="legend-marker chipotle-marker"></span>
-                                        Chipotle
-                                    </span>
-                                </label>
-                                <label class="filter-item">
-                                    <input type="checkbox" id="showHabitBurger" checked>
-                                    <span class="filter-label">
-                                        <span class="legend-marker habit-marker"></span>
-                                        Habit Burger
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Quick Actions -->
-                        <div class="filter-section">
-                            <div class="quick-actions">
-                                <button class="btn btn--sm btn--secondary" id="showAll">Show All</button>
-                                <button class="btn btn--sm btn--secondary" id="clearAll">Clear All</button>
-                            </div>
-                        </div>
+        <main class="main-content">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <div class="controls-section">
+                    <h3>Charging Networks</h3>
+                    <div class="network-toggles">
+                        <button class="btn btn--secondary network-toggle active" data-network="tesla">
+                            <span class="network-indicator tesla"></span>
+                            Tesla Supercharger
+                        </button>
+                        <button class="btn btn--secondary network-toggle active" data-network="electrify">
+                            <span class="network-indicator electrify"></span>
+                            Electrify America
+                        </button>
+                        <button class="btn btn--secondary network-toggle active" data-network="rivian">
+                            <span class="network-indicator rivian"></span>
+                            Rivian Adventure
+                        </button>
                     </div>
                 </div>
 
-                <!-- Map -->
-                <div id="map" class="map"></div>
+                <div class="controls-section">
+                    <h3>Restaurant Filter</h3>
+                    <select class="form-control cuisine-filter" id="cuisineFilter">
+                        <option value="">All Cuisines</option>
+                        <option value="Fast Food Burgers">Fast Food Burgers</option>
+                        <option value="Fast Casual Burgers">Fast Casual Burgers</option>
+                        <option value="Fast Casual Chicken">Fast Casual Chicken</option>
+                        <option value="Mediterranean">Mediterranean</option>
+                        <option value="Mexican">Mexican</option>
+                        <option value="BBQ">BBQ</option>
+                        <option value="American">American</option>
+                        <option value="Asian">Asian</option>
+                        <option value="Healthy">Healthy</option>
+                    </select>
+                </div>
+
+                <div class="controls-section">
+                    <h3>Search</h3>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search stations or restaurants...">
+                </div>
+            </div>
+
+            <!-- Map and Info Panel Container -->
+            <div class="map-info-container">
+                <!-- Map Container -->
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
 
                 <!-- Info Panel -->
-                <div class="info-panel card">
-                    <div class="info-header">
-                        <h3>Route Statistics</h3>
-                        <button class="btn btn--sm toggle-panel" id="toggleInfo">Hide</button>
-                    </div>
-                    
-                    <div class="info-content" id="infoContent">
-                        <div class="stat-item">
-                            <span class="stat-label">Total Tesla Locations:</span>
-                            <span class="stat-value" id="teslaCount">21</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Locations with Restaurants:</span>
-                            <span class="stat-value" id="restaurantLocationsCount">8</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Total Route Distance:</span>
-                            <span class="stat-value">~180 miles</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Estimated Drive Time:</span>
-                            <span class="stat-value">~3 hours</span>
-                        </div>
-
-                        <div class="recommendations">
-                            <h4>Top Multi-Restaurant Stops</h4>
-                            <ul class="recommendation-list">
-                                <li>Alameda South Shore Center (3 restaurants)</li>
-                                <li>Vacaville - Nut Tree Road (3 restaurants)</li>
-                                <li>Auburn - Bowman Road (2 restaurants)</li>
-                                <li>Fairfield - Travis Boulevard (2 restaurants)</li>
-                            </ul>
+                <div class="info-panel" id="infoPanel">
+                    <div class="info-panel-content">
+                        <h3>Welcome to I-80 EV Guide</h3>
+                        <p>Click on any charging station marker to view details and nearby dining options.</p>
+                        
+                        <div class="route-stats">
+                            <h4>Route Quick Facts</h4>
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-number">7</span>
+                                    <span class="stat-label">Charging Locations</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">~200</span>
+                                    <span class="stat-label">Miles Total</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">35+</span>
+                                    <span class="stat-label">Dining Options</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="restaurant-stats">
-                            <h4>Restaurant Locations</h4>
-                            <div class="restaurant-count">
-                                <span>Panda Express: <strong id="pandaCount">6</strong></span>
-                                <span>Chick-fil-A: <strong id="chickFilACount">4</strong></span>
-                                <span>Panera: <strong id="paneraCount">3</strong></span>
-                                <span>Chipotle: <strong id="chipotleCount">2</strong></span>
-                                <span>Habit Burger: <strong id="habitCount">1</strong></span>
+                        <div class="legend">
+                            <h4>Map Legend</h4>
+                            <div class="legend-items">
+                                <div class="legend-item">
+                                    <span class="network-indicator tesla"></span>
+                                    <span>Tesla Supercharger</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="network-indicator electrify"></span>
+                                    <span>Electrify America</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="network-indicator rivian"></span>
+                                    <span>Rivian Adventure Network</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="restaurant-indicator"></span>
+                                    <span>Fast Casual Restaurant</span>
+                                </div>
                             </div>
                         </div>
                     </div>
