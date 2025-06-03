@@ -1,4 +1,4 @@
-stationData = {};
+const stationData = {};
 
 // Global variables
 let map;
