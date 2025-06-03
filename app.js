@@ -1,429 +1,486 @@
-const stationData = {};
+// Application data
+const routeData = {
+  "route_info": {
+    "name": "I-80 Oakland to Truckee EV Route",
+    "distance": "185 miles",
+    "target_restaurants": ["Chipotle", "Habit Burger Grill", "Chick-fil-A", "Panda Express", "Panera Bread"],
+    "charging_networks": ["Tesla Supercharger", "Electrify America", "Rivian Adventure Network"]
+  },
+  "locations": [
+    {
+      "city": "Fairfield",
+      "lat": 38.2494,
+      "lng": -122.0399,
+      "charging_stations": [
+        {
+          "name": "Tesla Supercharger - Fairfield",
+          "network": "Tesla",
+          "address": "1350 Holiday Ln, Fairfield, CA 94534",
+          "plugs": 12,
+          "power": "V3 Supercharger",
+          "lat": 38.2494,
+          "lng": -122.0399
+        },
+        {
+          "name": "Electrify America - Target Fairfield", 
+          "network": "Electrify America",
+          "address": "2061 Cadenasso Drive, Fairfield, CA",
+          "plugs": 6,
+          "power": "62.5 kW",
+          "lat": 38.2500,
+          "lng": -122.0380
+        }
+      ],
+      "restaurants": [
+        {
+          "name": "Chipotle Mexican Grill",
+          "chain": "Chipotle",
+          "address": "1586 Gateway Blvd, Ste B, Fairfield, CA 94533",
+          "phone": "(707) 432-0330",
+          "rating": 2.2,
+          "price": "$$",
+          "walking_distance": "0.3 miles from Tesla Supercharger",
+          "lat": 38.2480,
+          "lng": -122.0420
+        }
+      ]
+    },
+    {
+      "city": "Vacaville",
+      "lat": 38.3566,
+      "lng": -121.9877,
+      "charging_stations": [
+        {
+          "name": "Tesla Supercharger - Premium Outlets",
+          "network": "Tesla", 
+          "address": "321 Nut Tree Rd, Vacaville, CA 95687",
+          "plugs": 52,
+          "power": "V3 Supercharger",
+          "lat": 38.3566,
+          "lng": -121.9877
+        },
+        {
+          "name": "Electrify America - Vacaville",
+          "network": "Electrify America",
+          "address": "Vacaville Premium Outlets area",
+          "plugs": 10,
+          "power": "150+ kW",
+          "lat": 38.3570,
+          "lng": -121.9870
+        }
+      ],
+      "restaurants": [
+        {
+          "name": "Habit Burger & Grill",
+          "chain": "Habit Burger",
+          "address": "1640 E Monte Vista Ave, Vacaville, CA 95688",
+          "phone": "(707) 452-0292",
+          "rating": 4.2,
+          "price": "$10-20",
+          "walking_distance": "0.5 miles from Premium Outlets",
+          "lat": 38.3590,
+          "lng": -121.9850
+        },
+        {
+          "name": "Chick-fil-A",
+          "chain": "Chick-fil-A",
+          "address": "2081 Harbison Dr, Vacaville, CA 95687", 
+          "phone": "(707) 447-1269",
+          "rating": 4.5,
+          "price": "$10-20",
+          "walking_distance": "0.4 miles from Premium Outlets",
+          "lat": 38.3580,
+          "lng": -121.9860
+        }
+      ]
+    },
+    {
+      "city": "Auburn",
+      "lat": 38.8966,
+      "lng": -121.0769,
+      "charging_stations": [
+        {
+          "name": "Electrify America - Auburn",
+          "network": "Electrify America",
+          "address": "Near Auburn, CA (Motel 6 area)",
+          "plugs": 4,
+          "power": "150+ kW",
+          "lat": 38.8966,
+          "lng": -121.0769
+        }
+      ],
+      "restaurants": [
+        {
+          "name": "Panera Bread",
+          "chain": "Panera",
+          "address": "2845 Bell Rd, Auburn, CA 95603",
+          "phone": "(530) 888-1845", 
+          "rating": 3.9,
+          "price": "$10-20",
+          "walking_distance": "0.6 miles from EA station",
+          "lat": 38.8980,
+          "lng": -121.0750
+        }
+      ]
+    },
+    {
+      "city": "Roseville",
+      "lat": 38.7521,
+      "lng": -121.2880,
+      "charging_stations": [
+        {
+          "name": "Electrify America - Roseville",
+          "network": "Electrify America",
+          "address": "Roseville, CA",
+          "plugs": 6,
+          "power": "150+ kW",
+          "lat": 38.7521,
+          "lng": -121.2880
+        }
+      ],
+      "restaurants": [
+        {
+          "name": "Habit Burger & Grill",
+          "chain": "Habit Burger",
+          "address": "933 Pleasant Grove Blvd, Roseville, CA 95678",
+          "phone": "(916) 791-5292",
+          "rating": 4.3,
+          "price": "$10-20", 
+          "walking_distance": "0.3 miles from EA station",
+          "lat": 38.7530,
+          "lng": -121.2870
+        },
+        {
+          "name": "Chick-fil-A",
+          "chain": "Chick-fil-A",
+          "address": "912 Pleasant Grove Blvd, Roseville, CA 95678",
+          "phone": "(916) 773-5558",
+          "rating": 4.6,
+          "price": "$10-20",
+          "walking_distance": "0.3 miles from EA station",
+          "lat": 38.7540,
+          "lng": -121.2860
+        },
+        {
+          "name": "Panera Bread",
+          "chain": "Panera", 
+          "address": "5100 Commons Dr, Rocklin, CA 95677",
+          "phone": "(916) 652-7819",
+          "rating": 3.9,
+          "price": "$10-20",
+          "walking_distance": "0.5 miles from Roseville charging",
+          "lat": 38.7550,
+          "lng": -121.2850
+        }
+      ]
+    },
+    {
+      "city": "Truckee",
+      "lat": 39.3280,
+      "lng": -120.1833,
+      "charging_stations": [
+        {
+          "name": "Tesla Supercharger - Truckee",
+          "network": "Tesla",
+          "address": "Near Donner Pass Rd, Truckee, CA",
+          "plugs": 29,
+          "power": "V3 Supercharger", 
+          "lat": 39.3280,
+          "lng": -120.1833
+        },
+        {
+          "name": "Rivian Adventure Network - Truckee",
+          "network": "Rivian",
+          "address": "Truckee area",
+          "plugs": 6,
+          "power": "150+ kW",
+          "lat": 39.3290,
+          "lng": -120.1820
+        },
+        {
+          "name": "Electrify America - Save Mart Truckee",
+          "network": "Electrify America",
+          "address": "11399 Deerfield Drive, Truckee, CA 96161",
+          "plugs": 5,
+          "power": "150+ kW",
+          "lat": 39.3270,
+          "lng": -120.1840
+        }
+      ],
+      "restaurants": [
+        {
+          "name": "No Target Chains Available",
+          "chain": "Local",
+          "address": "Alternatives: Full Belly Deli, Burger Me, Coffeebar",
+          "phone": "N/A",
+          "rating": "N/A",
+          "price": "$$",
+          "walking_distance": "Consider stopping in Roseville for target chains",
+          "lat": 39.3280,
+          "lng": -120.1833
+        }
+      ]
+    }
+  ]
+};
 
 // Global variables
 let map;
-let stationMarkers = [];
-let restaurantMarkers = [];
+let markersLayer;
+let allMarkers = [];
 let activeFilters = {
-  networks: new Set(['tesla', 'electrify', 'rivian']),
-  cuisine: ''
-};
-let searchActive = false;
-
-// Network colors
-const networkColors = {
-  'Tesla': '#DC2626',
-  'Electrify America': '#2563EB',
-  'Rivian': '#16A34A'
+  networks: new Set(['tesla', 'electrify-america', 'rivian']),
+  restaurants: new Set(['chipotle', 'habit-burger', 'chick-fil-a', 'panda-express', 'panera'])
 };
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
   initializeMap();
-  setupEventListeners();
-  loadChargingStations();
-  drawI80Route();
+  createMarkers();
+  setupFilters();
+  updateStats();
 });
 
 // Initialize the Leaflet map
 function initializeMap() {
-  map = L.map('map').setView([38.7, -121.3], 8);
+  // Center the map on the I-80 corridor
+  map = L.map('map').setView([38.8, -121.3], 8);
   
+  // Add OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+    attribution: '© OpenStreetMap contributors'
   }).addTo(map);
-}
-
-// Setup event listeners
-function setupEventListeners() {
-  // Network toggle buttons
-  document.querySelectorAll('.network-toggle').forEach(button => {
-    button.addEventListener('click', function() {
-      const network = this.dataset.network;
-      toggleNetwork(network, this);
-    });
-  });
-
-  // Cuisine filter
-  document.getElementById('cuisineFilter').addEventListener('change', function() {
-    activeFilters.cuisine = this.value;
-    applyFilters();
-  });
-
-  // Search functionality
-  document.getElementById('searchInput').addEventListener('input', function() {
-    performSearch(this.value);
-  });
-}
-
-// Toggle network visibility
-function toggleNetwork(network, button) {
-  if (activeFilters.networks.has(network)) {
-    activeFilters.networks.delete(network);
-    button.classList.remove('active');
-  } else {
-    activeFilters.networks.add(network);
-    button.classList.add('active');
-  }
-  applyFilters();
-}
-
-// Load charging stations onto the map
-function loadChargingStations() {
-  Object.entries(stationData).forEach(([city, stations]) => {
-    Object.entries(stations).forEach(([stationKey, station]) => {
-      createStationMarker(station, city);
-      createRestaurantMarkers(station);
-    });
-  });
-}
-
-// Create a marker for a charging station
-function createStationMarker(station, city) {
-  const color = networkColors[station.network];
-  const network = station.network.toLowerCase().replace(' ', '');
   
-  const marker = L.circleMarker([station.lat, station.lng], {
-    radius: 10,
-    fillColor: color,
-    color: '#ffffff',
-    weight: 2,
-    opacity: 1,
-    fillOpacity: 0.8
+  // Create layer group for markers
+  markersLayer = L.layerGroup().addTo(map);
+}
+
+// Create markers for charging stations and restaurants
+function createMarkers() {
+  routeData.locations.forEach(location => {
+    // Create charging station markers
+    location.charging_stations.forEach(station => {
+      const marker = createChargingStationMarker(station);
+      allMarkers.push({
+        marker: marker,
+        type: 'charging',
+        network: getNetworkFilter(station.network),
+        data: station
+      });
+    });
+    
+    // Create restaurant markers
+    location.restaurants.forEach(restaurant => {
+      // Skip local alternatives marker
+      if (restaurant.chain === 'Local') return;
+      
+      const marker = createRestaurantMarker(restaurant);
+      allMarkers.push({
+        marker: marker,
+        type: 'restaurant',
+        chain: getChainFilter(restaurant.chain),
+        data: restaurant
+      });
+    });
   });
+  
+  // Add all markers to the map initially
+  updateVisibleMarkers();
+}
 
+// Create charging station marker
+function createChargingStationMarker(station) {
+  const icon = L.divIcon({
+    className: 'custom-marker',
+    html: `<div class="marker-dot ${getNetworkFilter(station.network)}" style="width: 16px; height: 16px; margin: 2px;"></div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
+  
+  const marker = L.marker([station.lat, station.lng], { icon: icon });
+  
   const popupContent = `
-    <div style="font-family: var(--font-family-base);">
-      <h4 style="margin: 0 0 8px 0; color: ${color};">${station.network}</h4>
-      <p style="margin: 0 0 4px 0; font-size: 12px;"><strong>${city.charAt(0).toUpperCase() + city.slice(1)}</strong></p>
-      <p style="margin: 0 0 4px 0; font-size: 11px;">${station.address}</p>
-      <p style="margin: 0; font-size: 11px;"><strong>Stalls:</strong> ${station.stalls} | <strong>Power:</strong> ${station.max_power}</p>
-    </div>
+    <div class="popup-title">${station.name}</div>
+    <div class="popup-detail"><strong>Network:</strong> ${station.network}</div>
+    <div class="popup-detail"><strong>Address:</strong> ${station.address}</div>
+    <div class="popup-detail"><strong>Plugs:</strong> ${station.plugs}</div>
+    <div class="popup-detail"><strong>Power:</strong> ${station.power}</div>
   `;
-
+  
   marker.bindPopup(popupContent);
   
-  // Prevent map zoom on marker click by stopping event propagation
-  marker.on('click', function(e) {
-    e.originalEvent.stopPropagation();
-    showStationInfo(station, city);
-  });
-  
-  marker.addTo(map);
-  stationMarkers.push({
-    marker: marker,
-    network: network,
-    station: station,
-    city: city,
-    visible: true
-  });
-}
-
-// Create markers for restaurants near a station
-function createRestaurantMarkers(station) {
-  station.nearby_restaurants.forEach((restaurant, index) => {
-    // Calculate approximate restaurant coordinates (offset from station)
-    const offsetLat = (Math.random() - 0.5) * 0.008;
-    const offsetLng = (Math.random() - 0.5) * 0.008;
-    
-    const marker = L.circleMarker([station.lat + offsetLat, station.lng + offsetLng], {
-      radius: 5,
-      fillColor: '#F59E0B',
-      color: '#ffffff',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.8
-    });
-
-    const popupContent = `
-      <div style="font-family: var(--font-family-base);">
-        <h4 style="margin: 0 0 4px 0; color: #F59E0B;">${restaurant.name}</h4>
-        <p style="margin: 0 0 2px 0; font-size: 11px;"><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
-        <p style="margin: 0 0 2px 0; font-size: 11px;"><strong>Rating:</strong> ${restaurant.rating}/5</p>
-        <p style="margin: 0; font-size: 11px;"><strong>Distance:</strong> ${restaurant.distance}</p>
-      </div>
-    `;
-
-    marker.bindPopup(popupContent);
-    marker.addTo(map);
-    
-    restaurantMarkers.push({
-      marker: marker,
-      restaurant: restaurant,
-      station: station,
-      visible: true
+  marker.on('click', function() {
+    updateInfoPanel({
+      title: station.name,
+      type: 'Charging Station',
+      details: [
+        ['Network', station.network],
+        ['Address', station.address],
+        ['Plugs', station.plugs],
+        ['Power', station.power]
+      ]
     });
   });
-}
-
-// Draw I-80 route line
-function drawI80Route() {
-  const i80Points = [
-    [37.8044, -122.2712], // Oakland
-    [38.1040, -122.2561], // Vallejo
-    [38.2494, -122.0531], // Fairfield
-    [38.5449, -121.7405], // Davis
-    [38.6382, -121.5263], // Sacramento
-    [38.7521, -121.2618], // Roseville
-    [38.8973, -121.0767], // Auburn
-    [39.3280, -120.1832]  // Truckee
-  ];
-
-  L.polyline(i80Points, {
-    color: '#6B7280',
-    weight: 4,
-    opacity: 0.6,
-    dashArray: '10, 10'
-  }).addTo(map);
-}
-
-// Apply all active filters
-function applyFilters() {
-  if (searchActive) return; // Don't apply filters during search
   
-  // Filter stations
-  stationMarkers.forEach(item => {
-    const shouldShow = activeFilters.networks.has(item.network);
-    
-    if (shouldShow && !item.visible) {
-      item.marker.addTo(map);
-      item.visible = true;
-    } else if (!shouldShow && item.visible) {
-      map.removeLayer(item.marker);
-      item.visible = false;
-    }
-  });
-
-  // Filter restaurants
-  restaurantMarkers.forEach(item => {
-    const stationNetwork = item.station.network.toLowerCase().replace(' ', '');
-    const stationVisible = activeFilters.networks.has(stationNetwork);
-    const cuisineMatch = !activeFilters.cuisine || 
-      item.restaurant.cuisine.toLowerCase().includes(activeFilters.cuisine.toLowerCase());
-    
-    const shouldShow = stationVisible && cuisineMatch;
-    
-    if (shouldShow && !item.visible) {
-      item.marker.addTo(map);
-      item.visible = true;
-    } else if (!shouldShow && item.visible) {
-      map.removeLayer(item.marker);
-      item.visible = false;
-    }
-  });
+  return marker;
 }
 
-// Show station information in the side panel
-function showStationInfo(station, city) {
-  const infoPanel = document.getElementById('infoPanel');
-  const networkColor = networkColors[station.network];
+// Create restaurant marker
+function createRestaurantMarker(restaurant) {
+  const icon = L.divIcon({
+    className: 'custom-marker',
+    html: `<div class="marker-dot restaurant" style="width: 16px; height: 16px; margin: 2px;"></div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
   
-  const content = `
-    <div class="info-panel-content">
-      <div class="station-info">
-        <div class="station-header">
-          <span class="network-indicator" style="background-color: ${networkColor}"></span>
-          <h3>${station.network}</h3>
-        </div>
-        <h4>${city.charAt(0).toUpperCase() + city.slice(1)}</h4>
-        <p style="font-size: 14px; margin-bottom: 16px;">${station.address}</p>
-        
-        <div class="station-details">
-          <div class="station-detail-item">
-            <span class="detail-label">Charging Stalls:</span>
-            <span class="detail-value">${station.stalls}</span>
-          </div>
-          <div class="station-detail-item">
-            <span class="detail-label">Max Power:</span>
-            <span class="detail-value">${station.max_power}</span>
-          </div>
-          <div class="station-detail-item">
-            <span class="detail-label">Network:</span>
-            <span class="detail-value">${station.network}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="restaurant-list">
-        <h4>Nearby Restaurants</h4>
-        ${station.nearby_restaurants.map(restaurant => `
-          <div class="restaurant-item">
-            <div class="restaurant-header">
-              <h5 class="restaurant-name">${restaurant.name}</h5>
-              <span class="restaurant-rating">${restaurant.rating}</span>
-            </div>
-            <div class="restaurant-info">
-              <span class="restaurant-cuisine">${restaurant.cuisine}</span>
-              <span class="restaurant-distance">${restaurant.distance}</span>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
+  const marker = L.marker([restaurant.lat, restaurant.lng], { icon: icon });
+  
+  const popupContent = `
+    <div class="popup-title">${restaurant.name}</div>
+    <div class="popup-detail"><strong>Chain:</strong> ${restaurant.chain}</div>
+    <div class="popup-detail"><strong>Address:</strong> ${restaurant.address}</div>
+    <div class="popup-detail"><strong>Phone:</strong> ${restaurant.phone}</div>
+    <div class="popup-detail"><strong>Rating:</strong> <span class="rating">${restaurant.rating}/5</span></div>
+    <div class="popup-detail"><strong>Price:</strong> ${restaurant.price}</div>
+    <div class="popup-detail"><strong>Walking Distance:</strong> ${restaurant.walking_distance}</div>
   `;
   
-  infoPanel.innerHTML = content;
-}
-
-// Perform search functionality
-function performSearch(query) {
-  const searchInput = document.getElementById('searchInput');
+  marker.bindPopup(popupContent);
   
-  if (!query.trim()) {
-    // Reset search state
-    searchActive = false;
-    searchInput.style.backgroundColor = '';
-    
-    // Restore normal filtering
-    applyFilters();
-    return;
-  }
-
-  searchActive = true;
-  searchInput.style.backgroundColor = 'var(--color-secondary)';
-  
-  const searchTerm = query.toLowerCase();
-  let foundResults = false;
-
-  // Search and update stations
-  stationMarkers.forEach(item => {
-    const isMatch = item.city.toLowerCase().includes(searchTerm) ||
-                   item.station.network.toLowerCase().includes(searchTerm) ||
-                   item.station.address.toLowerCase().includes(searchTerm);
-
-    if (isMatch) {
-      if (!item.visible) {
-        item.marker.addTo(map);
-        item.visible = true;
-      }
-      item.marker.setStyle({
-        fillOpacity: 1,
-        opacity: 1,
-        radius: 12
-      });
-      foundResults = true;
-    } else {
-      item.marker.setStyle({
-        fillOpacity: 0.3,
-        opacity: 0.3,
-        radius: 8
-      });
-    }
-  });
-
-  // Search and update restaurants
-  restaurantMarkers.forEach(item => {
-    const isMatch = item.restaurant.name.toLowerCase().includes(searchTerm) ||
-                   item.restaurant.cuisine.toLowerCase().includes(searchTerm);
-
-    if (isMatch) {
-      if (!item.visible) {
-        item.marker.addTo(map);
-        item.visible = true;
-      }
-      item.marker.setStyle({
-        fillOpacity: 1,
-        opacity: 1,
-        radius: 7
-      });
-      foundResults = true;
-    } else {
-      item.marker.setStyle({
-        fillOpacity: 0.3,
-        opacity: 0.3,
-        radius: 4
-      });
-    }
-  });
-
-  // Update search input styling based on results
-  if (foundResults) {
-    searchInput.style.borderColor = 'var(--color-success)';
-  } else {
-    searchInput.style.borderColor = 'var(--color-warning)';
-  }
-}
-
-// Add this utility function for converting meters to miles
-function metersToMiles(meters) {
-  return (meters * 0.000621371).toFixed(1) + ' miles';
-}
-
-// Modified createRestaurantMarkers to use Google Places data
-async function fetchAndCreateRestaurantMarkers(station) {
-  try {
-    const service = new google.maps.places.PlacesService(map._container);
-    
-    const request = {
-      location: new google.maps.LatLng(station.lat, station.lng),
-      radius: 800, // 800 meters (~0.5 mile walk)
-      type: ['restaurant'],
-      rankBy: google.maps.places.RankBy.PROMINENCE
-    };
-
-    const results = await new Promise((resolve, reject) => {
-      service.nearbySearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) resolve(results);
-        else reject(status);
-      });
+  marker.on('click', function() {
+    updateInfoPanel({
+      title: restaurant.name,
+      type: 'Restaurant',
+      details: [
+        ['Chain', restaurant.chain],
+        ['Address', restaurant.address],
+        ['Phone', restaurant.phone],
+        ['Rating', `${restaurant.rating}/5`],
+        ['Price', restaurant.price],
+        ['Walking Distance', restaurant.walking_distance]
+      ]
     });
+  });
+  
+  return marker;
+}
 
-    // Process results and create markers
-    results.forEach(place => {
-      if (!place.name || !place.geometry?.location) return;
-
-      // Calculate approximate offset for marker placement
-      const offsetLat = (Math.random() - 0.5) * 0.008;
-      const offsetLng = (Math.random() - 0.5) * 0.008;
+// Setup filter functionality
+function setupFilters() {
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const filter = this.dataset.filter;
+      const isActive = this.classList.contains('active');
       
-      const marker = L.circleMarker([
-        station.lat + offsetLat,
-        station.lng + offsetLng
-      ], {
-        radius: 5,
-        fillColor: '#F59E0B',
-        color: '#ffffff',
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-      });
-
-      const popupContent = `
-        <div style="font-family: var(--font-family-base);">
-          <h4 style="margin: 0 0 4px 0; color: #F59E0B;">${place.name}</h4>
-          <p style="margin: 0 0 2px 0; font-size: 11px;">
-            ${place.rating ? `<strong>Rating:</strong> ${place.rating}/5` : ''}
-          </p>
-          ${place.vicinity ? `<p style="margin: 0 0 2px 0; font-size: 11px;">${place.vicinity}</p>` : ''}
-        </div>
-      `;
-
-      marker.bindPopup(popupContent);
-      marker.addTo(map);
-
-      restaurantMarkers.push({
-        marker: marker,
-        restaurant: {
-          name: place.name,
-          address: place.vicinity,
-          rating: place.rating,
-          distance: metersToMiles(place.distance || 800)
-        },
-        station: station,
-        visible: true
-      });
+      if (isActive) {
+        this.classList.remove('active');
+        removeFilter(filter);
+      } else {
+        this.classList.add('active');
+        addFilter(filter);
+      }
+      
+      updateVisibleMarkers();
+      updateStats();
     });
-  } catch (error) {
-    console.error('Google Places error:', error);
+  });
+}
+
+// Add filter to active filters
+function addFilter(filter) {
+  if (['tesla', 'electrify-america', 'rivian'].includes(filter)) {
+    activeFilters.networks.add(filter);
+  } else {
+    activeFilters.restaurants.add(filter);
   }
 }
 
-// Modified loadChargingStations to use Google Places
-async function loadChargingStations() {
-  const stations = Object.values(stationData).flatMap(city => Object.values(city));
-  
-  for (const station of stations) {
-    createStationMarker(station);
-    await fetchAndCreateRestaurantMarkers(station);
+// Remove filter from active filters
+function removeFilter(filter) {
+  if (['tesla', 'electrify-america', 'rivian'].includes(filter)) {
+    activeFilters.networks.delete(filter);
+  } else {
+    activeFilters.restaurants.delete(filter);
   }
+}
+
+// Update visible markers based on active filters
+function updateVisibleMarkers() {
+  markersLayer.clearLayers();
+  
+  allMarkers.forEach(markerObj => {
+    let shouldShow = false;
+    
+    if (markerObj.type === 'charging') {
+      shouldShow = activeFilters.networks.has(markerObj.network);
+    } else if (markerObj.type === 'restaurant') {
+      shouldShow = activeFilters.restaurants.has(markerObj.chain);
+    }
+    
+    if (shouldShow) {
+      markersLayer.addLayer(markerObj.marker);
+    }
+  });
+}
+
+// Update statistics
+function updateStats() {
+  let visibleChargers = 0;
+  let visibleRestaurants = 0;
+  
+  allMarkers.forEach(markerObj => {
+    if (markerObj.type === 'charging' && activeFilters.networks.has(markerObj.network)) {
+      visibleChargers++;
+    } else if (markerObj.type === 'restaurant' && activeFilters.restaurants.has(markerObj.chain)) {
+      visibleRestaurants++;
+    }
+  });
+  
+  document.getElementById('charger-count').textContent = visibleChargers;
+  document.getElementById('restaurant-count').textContent = visibleRestaurants;
+}
+
+// Update info panel with selected marker details
+function updateInfoPanel(info) {
+  const infoPanel = document.getElementById('selected-info');
+  
+  let detailsHTML = '';
+  info.details.forEach(([label, value]) => {
+    detailsHTML += `
+      <div class="detail-label">${label}:</div>
+      <div class="detail-value">${value}</div>
+    `;
+  });
+  
+  infoPanel.innerHTML = `
+    <h4>${info.title}</h4>
+    <p class="status status--info">${info.type}</p>
+    <div class="detail-grid">
+      ${detailsHTML}
+    </div>
+  `;
+}
+
+// Helper functions
+function getNetworkFilter(network) {
+  const networkMap = {
+    'Tesla': 'tesla',
+    'Electrify America': 'electrify-america',
+    'Rivian': 'rivian'
+  };
+  return networkMap[network] || 'tesla';
+}
+
+function getChainFilter(chain) {
+  const chainMap = {
+    'Chipotle': 'chipotle',
+    'Habit Burger': 'habit-burger',
+    'Chick-fil-A': 'chick-fil-a',
+    'Panda Express': 'panda-express',
+    'Panera': 'panera'
+  };
+  return chainMap[chain] || 'chipotle';
 }
