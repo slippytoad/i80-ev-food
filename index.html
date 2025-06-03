@@ -1,264 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Tesla I-80 Supercharger Map (Modern Sidebar)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      overflow: hidden;
-      background: #e9ecef;
-    }
-    #sidebar {
-      width: 280px;
-      background: #f8f9fa;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-      padding: 24px 20px 20px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      z-index: 2;
-      min-width: 220px;
-    }
-    #map {
-      flex-grow: 1;
-      height: 100vh;
-      min-width: 0;
-    }
-    h2 {
-      margin-top: 0;
-      font-weight: 700;
-      color: #333;
-      letter-spacing: 0.5px;
-      font-size: 1.3em;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #555;
-      cursor: pointer;
-    }
-    select, input[type="checkbox"] {
-      margin-right: 10px;
-      accent-color: #007bff;
-    }
-    .restaurant-filters {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .restaurant-filters label {
-      font-weight: 500;
-      color: #444;
-      margin-bottom: 0;
-      display: flex;
-      align-items: center;
-    }
-    .footer {
-      margin-top: auto;
-      font-size: 0.95em;
-      color: #888;
-      text-align: center;
-      padding-top: 20px;
-      border-top: 1px solid #e0e0e0;
-    }
-    @media (max-width: 700px) {
-      #sidebar { width: 100vw; min-width: 0; box-shadow: none; }
-      body, html { flex-direction: column; }
-      #map { height: 60vh; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tesla Superchargers I-80: Oakland to Truckee</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="sidebar">
-    <h2>Filter Options</h2>
-    <div>
-      <label for="direction">Travel Direction</label>
-      <select id="direction">
-        <option value="eastbound">Eastbound (Oakland → Truckee)</option>
-        <option value="westbound">Westbound (Truckee → Oakland)</option>
-      </select>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="container">
+                <h1>Tesla Superchargers: I-80 Oakland to Truckee</h1>
+                <p class="header-subtitle">Plan your Tesla charging stops with nearby dining options</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="map-container">
+                <!-- Controls Panel -->
+                <div class="controls-panel card">
+                    <div class="controls-header">
+                        <h3>Filters & Legend</h3>
+                        <button class="btn btn--sm toggle-panel" id="toggleControls">Hide</button>
+                    </div>
+                    
+                    <div class="controls-content" id="controlsContent">
+                        <!-- Filters -->
+                        <div class="filter-section">
+                            <h4>Show Locations</h4>
+                            <div class="filter-group">
+                                <label class="filter-item">
+                                    <input type="checkbox" id="showTesla" checked>
+                                    <span class="filter-label">
+                                        <span class="legend-marker tesla-marker"></span>
+                                        Tesla Superchargers
+                                    </span>
+                                </label>
+                                <label class="filter-item">
+                                    <input type="checkbox" id="showOnlyWithRestaurants">
+                                    <span class="filter-label">Only locations with restaurants</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Restaurant Filters -->
+                        <div class="filter-section">
+                            <h4>Restaurant Types</h4>
+                            <div class="filter-group">
+                                <label class="filter-item">
+                                    <input type="checkbox" id="showPandaExpress" checked>
+                                    <span class="filter-label">
+                                        <span class="legend-marker panda-marker"></span>
+                                        Panda Express
+                                    </span>
+                                </label>
+                                <label class="filter-item">
+                                    <input type="checkbox" id="showChickFilA" checked>
+                                    <span class="filter-label">
+                                        <span class="legend-marker chickfila-marker"></span>
+                                        Chick-fil-A
+                                    </span>
+                                </label>
+                                <label class="filter-item">
+                                    <input type="checkbox" id="showPanera" checked>
+                                    <span class="filter-label">
+                                        <span class="legend-marker panera-marker"></span>
+                                        Panera
+                                    </span>
+                                </label>
+                                <label class="filter-item">
+                                    <input type="checkbox" id="showChipotle" checked>
+                                    <span class="filter-label">
+                                        <span class="legend-marker chipotle-marker"></span>
+                                        Chipotle
+                                    </span>
+                                </label>
+                                <label class="filter-item">
+                                    <input type="checkbox" id="showHabitBurger" checked>
+                                    <span class="filter-label">
+                                        <span class="legend-marker habit-marker"></span>
+                                        Habit Burger
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="filter-section">
+                            <div class="quick-actions">
+                                <button class="btn btn--sm btn--secondary" id="showAll">Show All</button>
+                                <button class="btn btn--sm btn--secondary" id="clearAll">Clear All</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map -->
+                <div id="map" class="map"></div>
+
+                <!-- Info Panel -->
+                <div class="info-panel card">
+                    <div class="info-header">
+                        <h3>Route Statistics</h3>
+                        <button class="btn btn--sm toggle-panel" id="toggleInfo">Hide</button>
+                    </div>
+                    
+                    <div class="info-content" id="infoContent">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Tesla Locations:</span>
+                            <span class="stat-value" id="teslaCount">21</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Locations with Restaurants:</span>
+                            <span class="stat-value" id="restaurantLocationsCount">8</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Route Distance:</span>
+                            <span class="stat-value">~180 miles</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Estimated Drive Time:</span>
+                            <span class="stat-value">~3 hours</span>
+                        </div>
+
+                        <div class="recommendations">
+                            <h4>Top Multi-Restaurant Stops</h4>
+                            <ul class="recommendation-list">
+                                <li>Alameda South Shore Center (3 restaurants)</li>
+                                <li>Vacaville - Nut Tree Road (3 restaurants)</li>
+                                <li>Auburn - Bowman Road (2 restaurants)</li>
+                                <li>Fairfield - Travis Boulevard (2 restaurants)</li>
+                            </ul>
+                        </div>
+
+                        <div class="restaurant-stats">
+                            <h4>Restaurant Locations</h4>
+                            <div class="restaurant-count">
+                                <span>Panda Express: <strong id="pandaCount">6</strong></span>
+                                <span>Chick-fil-A: <strong id="chickFilACount">4</strong></span>
+                                <span>Panera: <strong id="paneraCount">3</strong></span>
+                                <span>Chipotle: <strong id="chipotleCount">2</strong></span>
+                                <span>Habit Burger: <strong id="habitCount">1</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-    <div class="restaurant-filters">
-      <label><input type="checkbox" class="restaurant-type" value="chipotle" checked> Chipotle</label>
-      <label><input type="checkbox" class="restaurant-type" value="panera" checked> Panera</label>
-      <label><input type="checkbox" class="restaurant-type" value="chickfila" checked> Chick-fil-A</label>
-      <label><input type="checkbox" class="restaurant-type" value="habit" checked> Habit Burger</label>
-      <label><input type="checkbox" class="restaurant-type" value="panda" checked> Panda Express</label>
-    </div>
-    <div class="footer">Tesla I-80 Supercharger Map</div>
-  </div>
-  <div id="map"></div>
 
-  <script>
-    // Supercharger and Restaurant Data (expand as needed)
-    // direction: 'eastbound', 'westbound', or 'both'
-    const superchargers = [
-      {
-        name: "Oakland - Hegenberger Rd",
-        pos: {lat: 37.7698, lng: -122.2758},
-        direction: "both",
-        restaurants: []
-      },
-      {
-        name: "Alameda South Shore Center",
-        pos: {lat: 37.7648, lng: -122.2546},
-        direction: "both",
-        restaurants: [
-          {name: "Chipotle", type: "chipotle", pos: {lat: 37.7655, lng: -122.2541}},
-          {name: "Panera", type: "panera", pos: {lat: 37.7650, lng: -122.2550}},
-          {name: "Panda Express", type: "panda", pos: {lat: 37.7640, lng: -122.2540}}
-        ]
-      },
-      {
-        name: "Vacaville - Nut Tree Rd",
-        pos: {lat: 38.3677, lng: -121.9582},
-        direction: "eastbound",
-        restaurants: [
-          {name: "Chipotle", type: "chipotle", pos: {lat: 38.3680, lng: -121.9560}},
-          {name: "Panera", type: "panera", pos: {lat: 38.3685, lng: -121.9570}},
-          {name: "Panda Express", type: "panda", pos: {lat: 38.3690, lng: -121.9580}}
-        ]
-      },
-      {
-        name: "Fairfield - Travis Blvd",
-        pos: {lat: 38.2574, lng: -122.0654},
-        direction: "westbound",
-        restaurants: [
-          {name: "Chick-fil-A", type: "chickfila", pos: {lat: 38.2580, lng: -122.0660}},
-          {name: "Panda Express", type: "panda", pos: {lat: 38.2578, lng: -122.0650}}
-        ]
-      },
-      {
-        name: "Loomis - Raley's",
-        pos: {lat: 38.8170, lng: -121.1917},
-        direction: "eastbound",
-        restaurants: [
-          {name: "Starbucks", type: "panera", pos: {lat: 38.8175, lng: -121.1910}}
-        ]
-      },
-      {
-        name: "Rocklin Supercharger",
-        pos: {lat: 38.7906, lng: -121.2358},
-        direction: "both",
-        restaurants: [
-          {name: "Habit Burger", type: "habit", pos: {lat: 38.7910, lng: -121.2365}},
-          {name: "Panda Express", type: "panda", pos: {lat: 38.7915, lng: -121.2370}}
-        ]
-      },
-      {
-        name: "Auburn Supercharger",
-        pos: {lat: 38.9140, lng: -121.0773},
-        direction: "westbound",
-        restaurants: [
-          {name: "Chick-fil-A", type: "chickfila", pos: {lat: 38.9145, lng: -121.0780}},
-          {name: "Panda Express", type: "panda", pos: {lat: 38.9150, lng: -121.0790}}
-        ]
-      },
-      {
-        name: "Truckee - Donner Pass Rd",
-        pos: {lat: 39.3274, lng: -120.2074},
-        direction: "both",
-        restaurants: [
-          {name: "Panda Express", type: "panda", pos: {lat: 39.3280, lng: -120.2080}}
-        ]
-      }
-    ];
-
-    const icons = {
-      chipotle: "http://maps.google.com/mapfiles/ms/icons/brown-dot.png",
-      panera: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-      chickfila: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-      habit: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-      panda: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
-      supercharger: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-    };
-
-    let map, directionsService, directionsRenderer;
-    let chargerMarkers = [];
-    let restaurantMarkers = [];
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 8,
-        center: {lat: 38.58, lng: -121.49}
-      });
-      directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer({map: map, suppressMarkers: true});
-      document.getElementById('direction').addEventListener('change', updateMap);
-      document.querySelectorAll('.restaurant-type').forEach(cb => cb.addEventListener('change', updateMap));
-      updateMap();
-    }
-
-    function updateMap() {
-      // Clear old markers
-      chargerMarkers.forEach(m => m.setMap(null));
-      restaurantMarkers.forEach(m => m.setMap(null));
-      chargerMarkers = [];
-      restaurantMarkers = [];
-
-      // Get selected direction and restaurant types
-      const dir = document.getElementById('direction').value;
-      const checkedTypes = Array.from(document.querySelectorAll('.restaurant-type:checked')).map(cb => cb.value);
-
-      // Filter superchargers by direction
-      const scs = superchargers.filter(sc => sc.direction === dir || sc.direction === "both");
-
-      // Build route waypoints
-      const route = scs.map(sc => sc.pos);
-
-      // Show route if 2+ stops
-      if (route.length >= 2) {
-        directionsService.route({
-          origin: route[0],
-          destination: route[route.length - 1],
-          waypoints: route.slice(1, -1).map(loc => ({location: loc, stopover: true})),
-          travelMode: google.maps.TravelMode.DRIVING
-        }, (response, status) => {
-          if (status === 'OK') {
-            directionsRenderer.setDirections(response);
-          }
-        });
-      }
-
-      // Add Supercharger and restaurant markers
-      scs.forEach(sc => {
-        // Supercharger marker
-        const chargerMarker = new google.maps.Marker({
-          position: sc.pos,
-          map: map,
-          icon: icons.supercharger,
-          title: sc.name
-        });
-        const scInfo = `<b>${sc.name}</b><br>${sc.restaurants.length} restaurants nearby.`;
-        chargerMarker.addListener('click', () => {
-          new google.maps.InfoWindow({content: scInfo}).open(map, chargerMarker);
-        });
-        chargerMarkers.push(chargerMarker);
-
-        // Restaurant markers (filtered)
-        sc.restaurants.filter(r => checkedTypes.includes(r.type)).forEach(r => {
-          const rMarker = new google.maps.Marker({
-            position: r.pos,
-            map: map,
-            icon: icons[r.type],
-            title: `${r.name} (near ${sc.name})`
-          });
-          const rInfo = `<b>${r.name}</b><br>Near: ${sc.name}`;
-          rMarker.addListener('click', () => {
-            new google.maps.InfoWindow({content: rInfo}).open(map, rMarker);
-          });
-          restaurantMarkers.push(rMarker);
-        });
-      });
-    }
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGcxvnuW6VAAtihWg93u0EN3PvZdSAJoM&callback=initMap"
-    async defer></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
