@@ -1,179 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tesla I-80 Superchargers & Food Map</title>
+  <title>Tesla I-80 Supercharger Map with Direction Toggle</title>
   <style>
     #map { height: 90vh; width: 100%; }
-    #controls { margin: 10px; }
-    label { font-weight: bold; }
+    #controls { padding: 10px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+    label { font-weight: 500; margin-right: 10px; }
+    select { padding: 5px; border-radius: 4px; }
   </style>
 </head>
 <body>
   <div id="controls">
-    <label for="direction">Direction:</label>
+    <label for="direction">Travel Direction:</label>
     <select id="direction">
       <option value="eastbound">Eastbound (Oakland → Truckee)</option>
       <option value="westbound">Westbound (Truckee → Oakland)</option>
     </select>
   </div>
   <div id="map"></div>
+
   <script>
-    // Supercharger and Restaurant Data
     const superchargers = [
-      // Example data: Add more as needed
+      // Oakland Area
       {
-        name: "Oakland Supercharger",
-        position: {lat: 37.7698, lng: -122.2758},
+        name: "Oakland - Hegenberger Rd",
+        pos: {lat: 37.7698, lng: -122.2758},
+        restaurants: []
+      },
+      // Vacaville Area
+      {
+        name: "Vacaville - Nut Tree Rd",
+        pos: {lat: 38.3677, lng: -121.9582},
         restaurants: [
-          {name: "Panda Express", type: "panda", lat: 37.7710, lng: -122.2775},
-          {name: "Panera Bread", type: "panera", lat: 37.7705, lng: -122.2760}
+          {name: "Chipotle", type: "chipotle", pos: {lat: 38.3680, lng: -121.9560}},
+          {name: "Panera", type: "panera", pos: {lat: 38.3685, lng: -121.9570}},
+          {name: "Panda Express", type: "panda", pos: {lat: 38.3690, lng: -121.9580}}
         ]
       },
+      // Truckee Area
       {
-        name: "Alameda South Shore Center Supercharger",
-        position: {lat: 37.7648, lng: -122.2546},
+        name: "Truckee - Donner Pass Rd",
+        pos: {lat: 39.3274, lng: -120.2074},
         restaurants: [
-          {name: "Chipotle", type: "chipotle", lat: 37.7655, lng: -122.2541},
-          {name: "Panera Bread", type: "panera", lat: 37.7650, lng: -122.2550},
-          {name: "Panda Express", type: "panda", lat: 37.7640, lng: -122.2540}
-        ]
-      },
-      {
-        name: "Vacaville Nut Tree Road Supercharger",
-        position: {lat: 38.3677, lng: -121.9582},
-        restaurants: [
-          {name: "Chipotle", type: "chipotle", lat: 38.3680, lng: -121.9560},
-          {name: "Panera Bread", type: "panera", lat: 38.3685, lng: -121.9570},
-          {name: "Panda Express", type: "panda", lat: 38.3690, lng: -121.9580}
-        ]
-      },
-      {
-        name: "Fairfield Travis Blvd Supercharger",
-        position: {lat: 38.2574, lng: -122.0654},
-        restaurants: [
-          {name: "Chick-fil-A", type: "chickfila", lat: 38.2580, lng: -122.0660},
-          {name: "Panda Express", type: "panda", lat: 38.2578, lng: -122.0650}
-        ]
-      },
-      {
-        name: "Rocklin Supercharger",
-        position: {lat: 38.7906, lng: -121.2358},
-        restaurants: [
-          {name: "Habit Burger", type: "habit", lat: 38.7910, lng: -121.2365},
-          {name: "Panda Express", type: "panda", lat: 38.7915, lng: -121.2370}
-        ]
-      },
-      {
-        name: "Auburn Supercharger",
-        position: {lat: 38.9140, lng: -121.0773},
-        restaurants: [
-          {name: "Chick-fil-A", type: "chickfila", lat: 38.9145, lng: -121.0780},
-          {name: "Panda Express", type: "panda", lat: 38.9150, lng: -121.0790}
-        ]
-      },
-      {
-        name: "Truckee Donner Pass Supercharger",
-        position: {lat: 39.3274, lng: -120.2074},
-        restaurants: [
-          {name: "Panda Express", type: "panda", lat: 39.3280, lng: -120.2080}
+          {name: "Panda Express", type: "panda", pos: {lat: 39.3280, lng: -120.2080}}
         ]
       }
     ];
 
-    // Restaurant marker icons
     const icons = {
       chipotle: "http://maps.google.com/mapfiles/ms/icons/brown-dot.png",
       panera: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-      chickfila: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-      habit: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
       panda: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
-      supercharger: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+      supercharger: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
     };
 
-    // Route waypoints for eastbound and westbound
-    const eastbound = [
-      {lat: 37.7698, lng: -122.2758}, // Oakland
-      {lat: 37.7648, lng: -122.2546}, // Alameda
-      {lat: 38.2574, lng: -122.0654}, // Fairfield
-      {lat: 38.3677, lng: -121.9582}, // Vacaville
-      {lat: 38.7906, lng: -121.2358}, // Rocklin
-      {lat: 38.9140, lng: -121.0773}, // Auburn
-      {lat: 39.3274, lng: -120.2074}  // Truckee
-    ];
-    const westbound = [...eastbound].reverse();
-
     let map, directionsService, directionsRenderer;
-    let chargerMarkers = [];
-    let restaurantMarkers = [];
+    let eastMarkers = [];
+    let westMarkers = [];
 
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 8,
-        center: {lat: 38.58, lng: -121.49}
+        center: {lat: 38.58, lng: -121.49},
+        zoom: 9
       });
+
       directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer({map: map, suppressMarkers: true});
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        suppressMarkers: true
+      });
+
       document.getElementById('direction').addEventListener('change', updateMap);
+      createMarkerLayers();
       updateMap();
     }
 
-    function updateMap() {
-      // Clear old markers
-      chargerMarkers.forEach(m => m.setMap(null));
-      restaurantMarkers.forEach(m => m.setMap(null));
-      chargerMarkers = [];
-      restaurantMarkers = [];
-
-      // Get direction
-      const dir = document.getElementById('direction').value;
-      const route = dir === 'eastbound' ? eastbound : westbound;
-
-      // Show route
-      directionsService.route({
-        origin: route[0],
-        destination: route[route.length - 1],
-        waypoints: route.slice(1, -1).map(loc => ({location: loc, stopover: true})),
-        travelMode: google.maps.TravelMode.DRIVING
-      }, (response, status) => {
-        if (status === 'OK') {
-          directionsRenderer.setDirections(response);
-        }
+    function createMarkerLayers() {
+      // Eastbound markers
+      superchargers.forEach(sc => {
+        eastMarkers.push(createSuperchargerMarker(sc));
+        sc.restaurants.forEach(r => eastMarkers.push(createRestaurantMarker(r)));
       });
 
-      // Add Supercharger and restaurant markers
-      const scs = dir === 'eastbound' ? superchargers : [...superchargers].reverse();
-      scs.forEach(sc => {
-        // Supercharger marker
-        const chargerMarker = new google.maps.Marker({
-          position: sc.position,
-          map: map,
-          icon: icons.supercharger,
-          title: sc.name
-        });
-        const scInfo = `<b>${sc.name}</b><br>${sc.restaurants.length} restaurants nearby.`;
-        chargerMarker.addListener('click', () => {
-          new google.maps.InfoWindow({content: scInfo}).open(map, chargerMarker);
-        });
-        chargerMarkers.push(chargerMarker);
-
-        // Restaurant markers
-        sc.restaurants.forEach(r => {
-          const rMarker = new google.maps.Marker({
-            position: {lat: r.lat, lng: r.lng},
-            map: map,
-            icon: icons[r.type],
-            title: `${r.name} (near ${sc.name})`
-          });
-          const rInfo = `<b>${r.name}</b><br>Near: ${sc.name}`;
-          rMarker.addListener('click', () => {
-            new google.maps.InfoWindow({content: rInfo}).open(map, rMarker);
-          });
-          restaurantMarkers.push(rMarker);
-        });
-      });
-    }
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGcxvnuW6VAAtihWg93u0EN3PvZdSAJoM&callback=initMap"
-    async defer></script>
-</body>
-</html>
+      // Westbound markers (reverse order)
+      [...superchargers].reverse().forEach(sc => {
+        westMarkers.push(createSuperchargerMarker(sc));
+        sc.restaurants.forEach(r => westMarkers.push(createRestaurantMarker(r)));
