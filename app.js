@@ -1,4 +1,4 @@
-charging_stations_data = {};
+stationData = {};
 
 // Global variables
 let map;
